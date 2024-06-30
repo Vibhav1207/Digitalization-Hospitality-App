@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hospitality Digitalization</title>
+    </head>
+    <body>
+        <h1>Upload Group and Hostel information CSV files below</h1>
+        <form ref='uploadForm'
+        id='uploadForm'
+        action='/uploads'
+        method='post'
+        enctype='multipart/form-data'>
+        <label for="groupFile">Upload Group CSV:</label>
+        <input type="file" name="groupFile" id="groupFile" required /><br><br>
+        <label for="hostelFile">Upload Hostel CSV:</label>
+        <input type="file" name="hostelFile" id="hostelFile" required /><br><br>
+        <input type="submit" value='Upload!' />
+    </form>
+    </body>
+</html>
