@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const hostelSchema = new mongoose.Schema({
-    hostelName: String,
-    roomNumber: String,
-    capacity: String,
-    gender: String
+const HostelSchema = new Schema({
+  'Hostel Name': String,
+  'Room Number': Number,
+  'Capacity': Number,
+  'Gender': String
 });
 
-module.exports = mongoose.model('Hostek', hostelSchema);
+module.exports = mongoose.model('Hostel', HostelSchema);

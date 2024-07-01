@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Room Allocation</title>
-    </head>
-    <body>
-        <h1>Room Allocation</h1>
-        <table border="1">
-            <tr>
-                <th>Group ID</th>
-                <th>Hostel Name</th>
-                <th>Room Number</th>
-                <th>Members Allocated</th>
-            </tr>
-            <% allocation.forEach(item => {%>
-            <tr>
-                <td><%= item.groupID %></td>
-                <td><%= item.hostelName %></td>
-                <td><%= item.roomNumber %></td>
-                <td><%= istem.membersAllocated %></td>
-            </tr>
-        <%}); %>
-        </table>
-        <a href="/">Upload New Files</a>
-        <br><br>
-        <a href="<%= downloadLink %>">Download Allocation CSV</a>
-    </body>
+<head>
+  <title>Room Allocation</title>
+</head>
+<body>
+  <h1>Room Allocation</h1>
+  <table border="1">
+    <tr>
+      <th>Group ID</th>
+      <th>Hostel Name</th>
+      <th>Room Number</th>
+      <th>Members Allocated</th>
+    </tr>
+    <% allocation.forEach(item => { %>
+    <tr>
+      <td><%= item.groupId %></td>
+      <td><%= item.hostelName %></td>
+      <td><%= item.roomNumber %></td>
+      <td><%= item.membersAllocated %></td>
+    </tr>
+    <% }); %>
+  </table>
+  <a href="/">Upload New Files</a>
+  <br><br>
+  <a href="<%= downloadLink %>">Download Allocation CSV</a>
+</body>
 </html>
