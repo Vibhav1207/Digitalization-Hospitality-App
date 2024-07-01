@@ -1,63 +1,70 @@
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, request, jsonify, send_file
 import pandas as pd
+import os
+import csv
 
 app = Flask(__name__)
 
-def allocate_rooms(groups, hostels):
+#Route
+@app.route('/allocate', methods=['GET'])
+def allocate_room():
+    group_file_path = request.args.get('groupFilePath')
+    hostel_file_path = request.args.get('hostelFilePath')
+    
+    if not group_file_path or not hostel_file_path:
+        return jsonify({"error": "Missing file path"}), 400
+    
+    groups = pd.read_csv(group_file_path)
+    hostels = pd.read.csv(hostel_file_path)
+    
     allocation_results = []
-    group_dict = groups.to_dict('records')
-    hostel_dict = hostels.to_dict('records')
-
-
-    boys_hostels = [h for h in hostel_dict if h['Gender'] == 'Boys']
-    girls_hostels = [h for h in hostel_dict if h['Gender'] == 'Girls']
-
-    for group in group_dict:
+    hostel_dict = {}
+    
+    for _, row in hostels.interrows():
+        if row['Hostel Name'] not in hostel_dict:
+            hostel_dict[row['Hostel Name']] = []
+            hostel_dict[row['Hostel Name']].append({
+                'Room Number': row['Room Number'],
+                'Capacity': row['Capacity'],
+                'Gender': row['Gender'],
+                'Occupied': 0
+            })
+            
+    for _, group in group.interrows():
         group_id = group['Group ID']
         members = group['Members']
         gender = group['Gender']
-
-       
-        available_hostels = boys_hostels if gender == 'Boys' else girls_hostels
-
         
-        for hostel in available_hostels:
-            if members <= hostel['Capacity']:
-                allocation_results.append({
-                    "groupId": group_id,
-                    "hostelName": hostel['Hostel Name'],
-                    "roomNumber": hostel['Room Number'],
-                    "membersAllocated": members
-                })
-                hostel['Capacity'] -= members
+        allocated = False
+        for hostel_name, rooms in hostel_dict.items():
+            if allocated:
                 break
-
-    return allocation_results
-
-@app.route('/allocate', methods=['GET'])
-def allocate():
-    try:
-       
-        groups = pd.read_csv('uploads/groupFile.csv')
-        hostels = pd.read_csv('uploads/hostelFile.csv')
-
-        
-        allocation_results = allocate_rooms(groups, hostels)
-
-        
-        df = pd.DataFrame(allocation_results)
-        file_path = 'allocation_results.csv'
-        df.to_csv(file_path, index=False)
-
-        return jsonify({"allocationResults": allocation_results, "filePath": file_path})
-    except Exception as e:
-        app.logger.error(f"Error during allocation: {e}")
-        return str(e), 500
-
-@app.route('/download', methods=['GET'])
+            for room in room:
+             if room['Gender'] == gender and room['Occupied'] + members <= room['Capacity']:
+                allocation_results.append({
+                    'groupId': group_id,
+                    'hoselName': hostel_name,
+                    'roomNumber': room['Room Number'],
+                    'membersAllocated': members
+                })
+                room['Occuiped'] += members
+                allocated = True
+                break
+            
+    allocation_file_path = 'uploads/allocation_results.csv'
+    with open(allcoation_file_path, 'w', newline='') as csvfile:
+        fieldnames = ['groupId', 'hostelName', 'roomNumber', 'membersAllocated']  
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        for result in allocation_results:
+                  writer.writerow(result)
+                  
+    return jsonify({"allcationResults": allocation_results, "filePath": allocation_file_path})
+    
+@app.route('/downlaod', methods=['GET'])
 def download_file():
     file_path = request.args.get('filePath')
-    return send_file(file_path, as_attachment=True)
+    return send_file(file_path, as_attachment=True) 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5000)                 
